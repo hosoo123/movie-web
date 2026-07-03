@@ -1,20 +1,18 @@
 import Image from "next/image";
+import { Header } from "./_components/header";
+import { Hero } from "./_components/hero";
+import { MovieList } from "./_components/movieList";
 
 export default function Home() {
   return (
-    <div>
-      <header>
-        <div className="flex flex-row gap-2">
-          <img src="/icons/Vector.svg" alt="vectorIcon" />
-          <p className="text-indigo-700 font-bold text-base">Movie Z</p>
+    <div className="flex flex-col w-full h-screen">
+      <main className="w-[1440px] mx-auto flex flex-col gap-6">
+        <Header />
+        <div className="flex flex-col gap-13">
+          <Hero />
+          <MovieList />
         </div>
-        <div>
-          <button></button>
-          <input type="text" />
-        </div>
-        <div></div>
-      </header>
-      <main></main>
+      </main>
     </div>
   );
 }
