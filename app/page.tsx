@@ -2,6 +2,7 @@ import Image from "next/image";
 import { Header } from "./_components/header";
 import { Hero } from "./_components/hero";
 import { MovieList } from "./_components/movieList";
+import { Footer } from "./_components/footer";
 
 export default function Home() {
   return (
@@ -11,6 +12,7 @@ export default function Home() {
         <div className="flex flex-col gap-13">
           <Hero />
           <MovieList />
+          <Footer />
         </div>
       </main>
     </div>
