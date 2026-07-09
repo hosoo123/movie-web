@@ -20,7 +20,7 @@ export const Footer = () => {
                 alt="mail"
                 className="w-[14px] h-[13px]"
               />
-              <p>
+              <p className="cursor-pointer">
                 Email: <br />
                 support@movieZ.com
               </p>
@@ -37,7 +37,12 @@ export const Footer = () => {
               </p>
             </div>
           </div>
-          <div></div>
+          <div>
+            <p>Follow us</p>
+            <p className="cursor-pointer flex gap-3">
+              Facebook <span>Instagram </span>Twitter
+            </p>
+          </div>
         </div>
       </div>
     </footer>
