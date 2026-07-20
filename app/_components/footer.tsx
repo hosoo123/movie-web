@@ -1,7 +1,7 @@
 export const Footer = () => {
   return (
-    <footer className="bg-indigo-700 text-[#FAFAFA] w-full justify-around flex items-center">
-      <div className="w-full h-[200px] flex items-center justify-around">
+    <footer className="bg-indigo-700 w-full text-[#FAFAFA] gap-12 w-full flex justify-around items-center">
+      <div className="w-full h-[200px] flex items-center p-[80px] justify-between">
         <div className="flex flex-col gap-3 ">
           <div className="flex flex-row gap-2 ">
             <img src="/icons/film.svg" alt="film" width={16} height={16} />
@@ -11,7 +11,7 @@ export const Footer = () => {
             © 2024 Movie Z. All Rights Reserved.
           </p>
         </div>
-        <div>
+        <div className="flex flex-row gap-8">
           <div className="flex flex-col ">
             <p>Contact Information</p>
             <div className="flex flex-row items-center  gap-2">
@@ -37,10 +37,10 @@ export const Footer = () => {
               </p>
             </div>
           </div>
-          <div>
+          <div >
             <p>Follow us</p>
             <p className="cursor-pointer flex gap-3">
-              Facebook <span>Instagram </span>Twitter
+              Facebook <span>Instagram </span>Twitter <span>Youtube</span>
             </p>
           </div>
         </div>

@@ -1,14 +1,22 @@
 import Image from "next/image";
 
-export const MovieCard = () => {
+export const MovieCard = ({
+  title,
+  image,
+  rating,
+}: {
+  title: string;
+  image: string;
+  rating: number;
+}) => {
   return (
-    <div className="flex flex-col w-[230px] h-[440px] rounded-lg bg-gray-300">
+    <div className="flex flex-col w-[230px] h-[440px] rounded-xl border-black border-2 bg-gray-300">
       <Image
-        src="/images/sMovie-01.png"
-        alt="movie1"
+        src={image}
+        alt="movies"
         width={223}
         height={440}
-        className="w-full h-[340px]"
+        className="w-full h-[340px] rounded-lg"
       />
       <div className="p-2">
         {" "}
@@ -20,10 +28,10 @@ export const MovieCard = () => {
             height={12}
             className="w-4 h-4"
           />
-          6.9
+          {rating}
           <span className="text-[#71717A] text-xs flex items-center">/10</span>
         </p>
-        <p className="text-lg ">Dear Santa</p>
+        <p className="text-lg ">{title}</p>
       </div>
     </div>
   );
