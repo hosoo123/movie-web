@@ -12,7 +12,7 @@ export const MovieCard = ({
   return (
     <div className="flex flex-col w-[230px] h-[440px] rounded-xl border-black border-2 bg-gray-300">
       <Image
-        src={image}
+        src={`https://image.tmdb.org/t/p/w500${image}`}
         alt="movies"
         width={223}
         height={440}
