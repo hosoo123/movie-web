@@ -11,11 +11,11 @@ export default function Home() {
         <Header />
         <div className="flex flex-col gap-13">
           <Hero />
-          <MovieList genre="Upcoming"/>
-          <MovieList genre="Popular"/>
-          <MovieList genre="Top Rated"/>
+          <MovieList genre="Upcoming" ShowSeeMore={true} url={'/upcoming'}/>
+          <MovieList genre="Popular" ShowSeeMore={true} url={'/popular'}/>
+          <MovieList genre="Top Rated" ShowSeeMore={true} url={'/toprated'}/>
         </div>
-          <Footer />
+        <Footer />
       </main>
     </div>
   );

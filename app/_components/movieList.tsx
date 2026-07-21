@@ -1,6 +1,5 @@
 import { ChevronRight } from "lucide-react";
 import { MovieCard } from "./movieCard";
-import Link from "next/link";
 
 const movies = [
   {
@@ -65,17 +64,27 @@ const movies = [
   },
 ];
 
-export const MovieList = ({ genre }: { genre: string }) => {
+export const MovieList = ({
+  genre,
+  ShowSeeMore,
+  url,
+}: {
+  genre: string;
+  ShowSeeMore: Boolean;
+  url?: string;
+}) => {
   return (
     <section className="flex flex-col gap-4 w-full px-[80px]">
       <div className="flex justify-between items-center w-full">
         <p className="font-semibold text-[24px]">{genre} </p>
-        <div className="flex flex-row">
-          <Link href="/popular" className="font-medium text-sm">
-            See more
-          </Link>
-          <ChevronRight className="w-4.5 h-4.5 " />
-        </div>
+        {ShowSeeMore && (
+          <div className="flex flex-row">
+            <a href={url} className="font-medium text-sm">
+              See more
+            </a>
+            <ChevronRight className="w-4.5 h-4.5 " />
+          </div>
+        )}
       </div>
       <div className="flex gap-8 flex-wrap">
         {movies.map((item) => (
