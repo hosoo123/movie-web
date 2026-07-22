@@ -1,16 +1,24 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import Image from "next/image";
+import Link from "next/link";
 
 export const Header = () => {
   return (
-    <section >
+    <section>
       {" "}
       <header className="flex flex-row items-center justify-around w-[full] h-[59px]">
-        <div className="flex flex-row gap-2 ">
-          <img src="/icons/Logo.png" alt="logoMovie" width={100} height={100}/>
-          
-        </div>
+        <Link href="#">
+          <div className="flex flex-row gap-2 ">
+            <img
+              src="/icons/Logo.png"
+              alt="logoMovie"
+              width={100}
+              height={100}
+            />
+          </div>
+        </Link>
+
         <div className="flex flex-row gap-2.5">
           <Button className="drop-shadow-md flex gap-2 font-medium text-[14px] bg-white text-black h-9">
             <img src="/icons/down.svg" alt="down" />

@@ -23,11 +23,12 @@ export const PaginationMovie = () => {
             2
           </PaginationLink>
         </PaginationItem>
-        <PaginationItem>
-          <PaginationLink href="#">3</PaginationLink>
-        </PaginationItem>
+
         <PaginationItem>
           <PaginationEllipsis />
+        </PaginationItem>
+        <PaginationItem>
+          <PaginationLink href="#">5</PaginationLink>
         </PaginationItem>
         <PaginationItem>
           <PaginationNext href="#" />

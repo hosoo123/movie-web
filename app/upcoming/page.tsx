@@ -1,4 +1,5 @@
 "use client";
+import { Footer } from "../_components/footer";
 import { Header } from "../_components/header";
 import { MovieCard } from "../_components/movieCard";
 import { PaginationMovie } from "../_components/paginationMovie";
@@ -39,9 +40,10 @@ export default function Home() {
             ))}
           </div>
         </section>
-        <div className="flex w-full">
+        <div className="w-full">
           <PaginationMovie />
         </div>
+        <Footer />
       </section>
     </div>
   );
