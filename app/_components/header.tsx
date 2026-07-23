@@ -2,13 +2,14 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import Image from "next/image";
 import Link from "next/link";
+import { DarkModeToggle } from "./DarkMode";
 
 export const Header = () => {
   return (
     <section>
       {" "}
       <header className="flex flex-row items-center justify-around w-[full] h-[59px]">
-        <Link href="#">
+        <Link href="/">
           <div className="flex flex-row gap-2 ">
             <img
               src="/icons/Logo.png"
@@ -19,8 +20,8 @@ export const Header = () => {
           </div>
         </Link>
 
-        <div className="flex flex-row gap-2.5">
-          <Button className="drop-shadow-md flex gap-2 font-medium text-[14px] bg-white text-black h-9">
+        <div className="flex  flex-row gap-2.5">
+          <Button className="drop-shadow-md flex gap-2 font-medium text-[14px] bg-white text-black h-9 dark:border-white dark:bg-black  dark:text-white">
             <img src="/icons/down.svg" alt="down" />
             Genre
           </Button>
@@ -39,14 +40,7 @@ export const Header = () => {
             />
           </div>
         </div>
-        <div className="rounded-md w-9 h-9 bg-white flex items-center justify-center drop-shadow-lg">
-          <Image
-            src="/icons/Vector6.png"
-            alt="darkModeIcon"
-            width={16}
-            height={16}
-          />
-        </div>
+        <DarkModeToggle />
       </header>
     </section>
   );

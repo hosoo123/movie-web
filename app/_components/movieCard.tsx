@@ -10,7 +10,7 @@ export const MovieCard = ({
   rating: number;
 }) => {
   return (
-    <div className="flex flex-col w-[230px] h-[440px] rounded-xl border-black border-2 bg-gray-300">
+    <div className="flex flex-col w-[230px] h-[440px] rounded-xl border-black dark:border-white border-2 bg-gray-300">
       <Image
         src={`https://image.tmdb.org/t/p/w500${image}`}
         alt="movies"
@@ -20,7 +20,7 @@ export const MovieCard = ({
       />
       <div className="p-2">
         {" "}
-        <p className="flex flex-row gap-1.5 text-sm ">
+        <p className="flex flex-row gap-1.5 text-sm font-bold dark:text-purple-500">
           <Image
             src="/icons/star.png"
             alt="StarIcon"
@@ -29,9 +29,11 @@ export const MovieCard = ({
             className="w-4 h-4"
           />
           {rating}
-          <span className="text-[#71717A] text-xs flex items-center">/10</span>
+          <span className="text-[#71717A] text-xs flex items-center font-bold">
+            /10
+          </span>
         </p>
-        <p className="text-lg ">{title}</p>
+        <p className="text-lg  dark:text-black">{title}</p>
       </div>
     </div>
   );
