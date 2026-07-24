@@ -1,8 +1,8 @@
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import Image from "next/image";
 import Link from "next/link";
 import { DarkModeToggle } from "./DarkMode";
+import { DropdownMenuDemo } from "./genreButton";
 
 export const Header = () => {
   return (
@@ -19,13 +19,9 @@ export const Header = () => {
             />
           </div>
         </Link>
-
         <div className="flex  flex-row gap-2.5">
-          <Button className="drop-shadow-md flex gap-2 font-medium text-[14px] bg-white text-black h-9 dark:border-white dark:bg-black  dark:text-white">
-            <img src="/icons/down.svg" alt="down" />
-            Genre
-          </Button>
-          <div className="border rounded-lg flex flex-row h-9 w-[379px]">
+          <DropdownMenuDemo />
+          <div className="border rounded-lg flex flex-row h-9 w-[379px] dark:border-white">
             <img
               src="/icons/searchIcon.png"
               alt="searchIcon"

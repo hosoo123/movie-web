@@ -28,7 +28,7 @@ export const MovieCard = ({
             height={12}
             className="w-4 h-4"
           />
-          {rating}
+          {rating ? rating.toFixed(1) : "0.0"}
           <span className="text-[#71717A] text-xs flex items-center font-bold">
             /10
           </span>
