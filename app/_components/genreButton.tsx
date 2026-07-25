@@ -4,20 +4,40 @@ import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuPortal,
   DropdownMenuSeparator,
-  DropdownMenuShortcut,
-  DropdownMenuSub,
-  DropdownMenuSubContent,
-  DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { ChevronDown, ChevronRight } from "lucide-react";
-
-export function DropdownMenuDemo() {
+const data = [
+  "Action",
+  "Adventure",
+  "Animation",
+  "Biography",
+  "Comedy",
+  "Crime",
+  "Documentary",
+  "Drama",
+  "Family",
+  "Fantasy",
+  "Film-Noir",
+  "Game-Show",
+  "History",
+  "Horror",
+  "Music",
+  "Musical",
+  "Mystery",
+  "News",
+  "Reality-TV",
+  "Romance",
+  "Sci-Fi",
+  "Short",
+  "Sport",
+  "Talk-show",
+  "Thriller",
+  "War",
+  "Western",
+];
+export function GenreButtonDrop() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -31,17 +51,25 @@ export function DropdownMenuDemo() {
           Genre
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-[577px] h-[333px]" align="start">
+      <DropdownMenuContent className="w-[577px] h-[333px] p-5 " align="start">
         <div className="flex flex-col gap-2">
           <p className="text-2xl font-bold">Genres</p>
-          <p>See lits of movies by genre</p>
+          <p>See list of movies by genre</p>
         </div>
         <DropdownMenuSeparator />
         <div className="flex gap-3 flex-wrap">
-          <Button className="flex gap-2 items-center" variant={"outline"}>
-            <span>Action</span>
-            <ChevronRight />
-          </Button>
+          {data.map((item, index) => {
+            return (
+              <Button
+                key={index}
+                className="flex gap-2 items-center h-5 font-semibold text-[12px]"
+                variant={"outline"}
+              >
+                <span>{item}</span>
+                <ChevronRight />
+              </Button>
+            );
+          })}
         </div>
       </DropdownMenuContent>
     </DropdownMenu>
