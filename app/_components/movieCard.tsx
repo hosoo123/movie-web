@@ -5,13 +5,15 @@ export const MovieCard = ({
   title,
   image,
   rating,
+  id,
 }: {
   title: string;
+  id: number;
   image: string;
   rating: number;
 }) => {
   return (
-    <Link href="/movieDetails">
+    <Link href={`/movieDetails/${id}`}>
       <div className="flex flex-col w-[230px] h-[440px] rounded-xl border-black dark:border-white border-2 bg-gray-300">
         <Image
           src={`https://image.tmdb.org/t/p/w500${image}`}
@@ -21,7 +23,6 @@ export const MovieCard = ({
           className="w-full h-[340px] rounded-lg"
         />
         <div className="p-2">
-          {" "}
           <p className="flex flex-row gap-1.5 text-sm font-bold dark:text-purple-500">
             <Image
               src="/icons/star.png"

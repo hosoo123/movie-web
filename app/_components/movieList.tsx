@@ -27,7 +27,7 @@ export const MovieList = ({
           </Link>
         )}
       </div>
-      
+
       <div className="flex gap-8 flex-wrap">
         {movies.slice(0, 10).map((item) => (
           <MovieCard
@@ -35,6 +35,7 @@ export const MovieList = ({
             image={item.poster_path}
             title={item.title}
             rating={item.vote_average}
+            id={item.id}
           />
         ))}
       </div>
