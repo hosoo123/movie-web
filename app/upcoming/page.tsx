@@ -29,7 +29,10 @@ export default function Home() {
           <div className="flex justify-between items-center w-full">
             <p className="font-semibold text-[24px]">Upcoming </p>
           </div>
-          <div className="flex gap-7 flex-wrap">
+          <div
+            className="grid gap-8"
+            style={{ gridTemplateColumns: `repeat(5, minmax(0, 1fr))` }}
+          >
             {upcomingMovies.map((item) => (
               <MovieCard
                 key={item.id}
