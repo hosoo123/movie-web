@@ -29,13 +29,14 @@ export default function Home() {
           <div className="flex justify-between items-center w-full">
             <p className="font-semibold text-[24px]">Upcoming </p>
           </div>
-          <div className="flex gap-8 flex-wrap">
+          <div className="flex gap-7 flex-wrap">
             {upcomingMovies.map((item) => (
               <MovieCard
                 key={item.id}
                 image={item.poster_path}
                 title={item.title}
                 rating={item.vote_average}
+                id={item.id}
               />
             ))}
           </div>

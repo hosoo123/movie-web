@@ -43,9 +43,9 @@ export default function Home() {
 
   return (
     <div className="flex flex-col w-full h-screen">
-      <main className="w-[1440px] mx-auto flex flex-col gap-6">
+      <main className="w-360 mx-auto flex flex-col gap-6">
         <Header />
-        <div className="flex flex-col gap-13">
+        <div className="flex flex-col px-20 gap-13">
           <Hero />
           <MovieList
             genre="Upcoming"
