@@ -1,29 +1,5 @@
-// import { Card, CardContent } from "@/components/ui/card";
-// import {
-//   Carousel,
-//   CarouselContent,
-//   CarouselItem,
-//   CarouselNext,
-//   CarouselPrevious,
-// } from "@/components/ui/carousel";
-// import { HeroCard } from "./heroCard";
-// export const Hero = () => {
-//   return (
-//     <Carousel className="w-full h-full">
-//       <CarouselContent>
-//         {Array.from({ length: 5 }).map((_, index) => (
-//           <CarouselItem key={index}>
-//             <HeroCard />
-//           </CarouselItem>
-//         ))}
-//       </CarouselContent>
-//       <CarouselPrevious />
-//       <CarouselNext />
-//     </Carousel>
-//   );
-// };
 "use client";
-import * as React from "react";
+
 import Autoplay from "embla-carousel-autoplay";
 import { type CarouselApi } from "@/components/ui/carousel";
 import {
@@ -32,18 +8,30 @@ import {
   CarouselItem,
 } from "@/components/ui/carousel";
 import { HeroCard } from "./heroCard";
+import { useEffect, useRef, useState } from "react";
+const api_key = "3f7806eb786a47af748865926b439e68";
+
 
 export const Hero = () => {
-  const [api, setApi] = React.useState<CarouselApi>();
-  const [current, setCurrent] = React.useState(0);
+  const [api, setApi] = useState<CarouselApi>();
+  const [current, setCurrent] = useState(0);
+  const [movies, setMovies] = useState<any[]>([]);
+  const fetchHeroMovies = async () => {
+    const response = await fetch(
+      `https://api.themoviedb.org/3/movie/now_playing?language=en-US&page=1&api_key=${api_key}`,
+    );
+    const data = await response.json();
+    setMovies(data.results.slice(0, 5));
+    console.log("data", data.results);
+  };
 
-  // ✅ Autoplay plugin — 3 секунд тутам баруунаас зүүнлүү шилжинэ
-  const plugin = React.useRef(
-    Autoplay({ delay: 4000, stopOnInteraction: false })
-  );
+  useEffect(() => {
+    fetchHeroMovies();
+  }, []);
 
-  // ✅ Одоогийн slide-г хянана
-  React.useEffect(() => {
+  const plugin = useRef(Autoplay({ delay: 4000, stopOnInteraction: false }));
+
+  useEffect(() => {
     if (!api) return;
     api.on("select", () => {
       setCurrent(api.selectedScrollSnap());
@@ -55,19 +43,18 @@ export const Hero = () => {
       <Carousel
         setApi={setApi}
         plugins={[plugin.current]}
-        opts={{ loop: true }}  // ✅ Эцэст хүрэхэд эхнээс давтана
+        opts={{ loop: true }}
         className="w-full"
       >
         <CarouselContent>
-          {Array.from({ length: 5 }).map((_, index) => (
+          {movies.map((movie, index) => (
             <CarouselItem key={index}>
-              <HeroCard />
+              <HeroCard movie={movie} />
             </CarouselItem>
           ))}
         </CarouselContent>
       </Carousel>
 
-      {/* ✅ Dot indicator */}
       <div className="flex justify-center gap-2 mt-4">
         {Array.from({ length: 5 }).map((_, index) => (
           <button
