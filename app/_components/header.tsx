@@ -1,42 +1,34 @@
-import { Input } from "@/components/ui/input";
-import Image from "next/image";
+"use client";
+
 import Link from "next/link";
 import { DarkModeToggle } from "./DarkMode";
 import { GenreButtonDrop } from "./genreButton";
-
+import { SearchDropdown } from "./SearchDropdown";
+import { useState } from "react";
+import { Search } from "lucide-react";
 export const Header = () => {
+  const [searchOpen, setSearchOpen] = useState(false);
+
   return (
     <section>
-      {" "}
-      <header className="flex flex-row items-center justify-around w-[full] h-[59px]">
+      <header className="flex flex-row items-center justify-between sm:justify-around w-full h-[59px] relative px-4 sm:px-6">
+        {/* Лого */}
         <Link href="/">
-          <div className="flex flex-row gap-2 ">
-            <img
-              src="/icons/Logo.png"
-              alt="logoMovie"
-              width={100}
-              height={100}
-            />
-          </div>
+          <img src="/icons/Logo.png" alt="logoMovie" width={100} height={100} />
         </Link>
-        <div className="flex  flex-row gap-2.5">
-          <GenreButtonDrop />
-          <div className="border rounded-lg flex flex-row h-9 w-[379px] dark:border-white">
-            <img
-              src="/icons/searchIcon.png"
-              alt="searchIcon"
-              width={24}
-              height={24}
-              className="pl-3.5 object-contain absolute top-6"
-            />
-            <Input
-              type="text"
-              placeholder="Search.."
-              className="border-none outline-hidden h-full w-full pl-10 z-10"
-            />
-          </div>
+
+        {/* Genre + Search */}
+        <div className="flex flex-row gap-2.5 max-sm:hidden">
+          <GenreButtonDrop onOpen={() => setSearchOpen(false)} />
+          <SearchDropdown isOpen={searchOpen} setIsOpen={setSearchOpen} />
         </div>
+        <div className="flex gap-2.5">
+          <div className="justify-center items-center flex border rounded-lg sm:hidden h-9 w-9 border-zinc-300 bg-white text-zinc-700 hover:bg-zinc-100 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-200 dark:hover:bg-zinc-800">
+            <Search className="" />
+          </div>
+        {/* Dark mode */}
         <DarkModeToggle />
+        </div>
       </header>
     </section>
   );

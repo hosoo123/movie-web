@@ -16,16 +16,16 @@ export const MovieCard = ({
 }) => {
   return (
     <Link href={`/movieDetails/${id}`}>
-      <div className="flex flex-col w-full h-full rounded-xl border-black dark:border-white border-2 bg-gray-300">
+      <div className="flex flex-col w-full h-full rounded-xl border border-zinc-300 bg-gray-400 shadow-sm transition hover:-translate-y-1 hover:shadow-md dark:border-zinc-700 dark:bg-zinc-900">
         <Image
           src={`https://image.tmdb.org/t/p/w500${image}`}
           alt="movies"
           width={223}
           height={440}
-          className={`w-full rounded-lg ${size === "sm" ? "h-72" : "h-85"}`}
+          className={`w-full rounded-t-xl object-cover ${size === "sm" ? "h-64" : "h-72"}`}
         />
-        <div className="p-2">
-          <p className="flex flex-row gap-1.5 text-sm font-bold dark:text-purple-500">
+        <div className="p-2.5 ">
+          <p className="flex flex-row gap-1.5 text-sm font-bold text-amber-500">
             <Image
               src="/icons/star.png"
               alt="StarIcon"
@@ -38,9 +38,14 @@ export const MovieCard = ({
               /10
             </span>
           </p>
-          <p className={`${size === "sm" ? "text-sm" : "text-lg"}`}>{title}</p>
+          <p
+            className={`${size === "sm" ? "text-sm" : "text-base"} mt-1 line-clamp-2 text-zinc-800 dark:text-zinc-100`}
+          >
+            {title}
+          </p>
         </div>
       </div>
     </Link>
   );
 };
+  

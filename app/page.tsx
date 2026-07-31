@@ -43,7 +43,7 @@ export default function Home() {
 
   return (
     <div className="flex flex-col w-full h-screen">
-      <main className="w-360 mx-auto flex flex-col gap-6">
+      <main className="w-full sm:w-360 mx-auto flex flex-col  sm:gap-6 sm:px-6 lg:h-20 lg:px-20">
         <Header />
         <div className="flex flex-col px-20 gap-13">
           <Hero />

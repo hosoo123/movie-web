@@ -1,9 +1,4 @@
-import {
-  Dialog,
-  DialogContent,
-  DialogTrigger,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { TrailerDialog } from "@/app/_components/trailerDialog";
 
 export const MovieDetailImages = ({
   movieDetail,
@@ -28,39 +23,24 @@ export const MovieDetailImages = ({
           className="w-[760px] h-[428px]"
         />
 
-        {officialTrailer && (
-          <Dialog>
-            <DialogTrigger asChild>
-              <div className="absolute bottom-8 left-8 z-20 flex items-center gap-3 bg-black/40 hover:bg-black/60 p-2 pr-4 rounded-full backdrop-blur-sm transition cursor-pointer">
-                <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center">
-                  <img
-                    src="/icons/vector.svg"
-                    alt="Play"
-                    className="w-4 h-4 ml-0.5"
-                  />
-                </div>
-                <div className="text-white font-bold flex gap-2">
-                  <p>Play trailer</p>
-                </div>
-              </div>
-            </DialogTrigger>
-
-            <DialogContent className="!max-w-5xl w-[90vw] p-0 border-none bg-black overflow-hidden">
-              <DialogTitle className="sr-only">
-                {movieDetail?.title} Trailer
-              </DialogTitle>
-              <div className="aspect-video w-full">
-                <iframe
-                  src={`https://www.youtube.com/embed/${officialTrailer.key}?autoplay=1`}
-                  title="YouTube trailer player"
-                  className="w-full h-full"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                ></iframe>
-              </div>
-            </DialogContent>
-          </Dialog>
-        )}
+        <TrailerDialog
+          movieId={movieDetail?.id}
+          movieTitle={movieDetail?.title}
+          trailer={officialTrailer}
+        >
+          <div className="absolute bottom-8 left-8 z-20 flex items-center gap-3 bg-black/40 hover:bg-black/60 p-2 pr-4 rounded-full backdrop-blur-sm transition cursor-pointer">
+            <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center">
+              <img
+                src="/icons/vector.svg"
+                alt="Play"
+                className="w-4 h-4 ml-0.5"
+              />
+            </div>
+            <div className="text-white font-bold flex gap-2">
+              <p>Play trailer</p>
+            </div>
+          </div>
+        </TrailerDialog>
       </div>
     </div>
   );

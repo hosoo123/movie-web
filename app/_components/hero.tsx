@@ -6,11 +6,12 @@ import {
   Carousel,
   CarouselContent,
   CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
 } from "@/components/ui/carousel";
 import { HeroCard } from "./heroCard";
 import { useEffect, useRef, useState } from "react";
 const api_key = "3f7806eb786a47af748865926b439e68";
-
 
 export const Hero = () => {
   const [api, setApi] = useState<CarouselApi>();
@@ -40,20 +41,24 @@ export const Hero = () => {
 
   return (
     <div className="w-full relative">
-      <Carousel
-        setApi={setApi}
-        plugins={[plugin.current]}
-        opts={{ loop: true }}
-        className="w-full"
-      >
-        <CarouselContent>
-          {movies.map((movie, index) => (
-            <CarouselItem key={index}>
-              <HeroCard movie={movie} />
-            </CarouselItem>
-          ))}
-        </CarouselContent>
-      </Carousel>
+      <div className="relative">
+        <Carousel
+          setApi={setApi}
+          plugins={[plugin.current]}
+          opts={{ loop: true }}
+          className="w-full"
+        >
+          <CarouselContent>
+            {movies.map((movie, index) => (
+              <CarouselItem key={index}>
+                <HeroCard movie={movie} />
+              </CarouselItem>
+            ))}
+          </CarouselContent>
+          <CarouselPrevious className="left-4 z-20 bg-black/70 text-white border-white/20 hover:bg-black/90" />
+          <CarouselNext className="right-4 z-20 bg-black/70 text-white border-white/20 hover:bg-black/90" />
+        </Carousel>
+      </div>
 
       <div className="flex justify-center gap-2 mt-4">
         {Array.from({ length: 5 }).map((_, index) => (

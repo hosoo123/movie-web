@@ -1,54 +1,55 @@
 "use client";
+import { Suspense, useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { Footer } from "../_components/footer";
 import { Header } from "../_components/header";
 import { MovieCard } from "../_components/movieCard";
 import { PaginationMovie } from "../_components/paginationMovie";
-import { useEffect, useState } from "react";
 
 const api_key = "3f7806eb786a47af748865926b439e68";
-const apiUrlUpcoming = `https://api.themoviedb.org/3/movie/upcoming?api_key=${api_key}`;
 
-export default function Home() {
+function UpcomingContent() {
+  const searchParams = useSearchParams();
+  const page = Number(searchParams.get("page") || 1);
+
   const [upcomingMovies, setUpcomingMovies] = useState<any[]>([]);
-
-  const fetchUpcomingMovies = async () => {
-    const response = await fetch(apiUrlUpcoming);
-    const data = await response.json();
-    setUpcomingMovies(data.results);
-  };
+  const [totalPages, setTotalPages] = useState(1);
 
   useEffect(() => {
+    const fetchUpcomingMovies = async () => {
+      const response = await fetch(
+        `https://api.themoviedb.org/3/movie/upcoming?language=en-US&page=${page}&api_key=${api_key}`
+      );
+      const data = await response.json();
+      setUpcomingMovies(data.results || []);
+      setTotalPages(Math.min(data.total_pages, 500));
+    };
     fetchUpcomingMovies();
-  }, []);
+  }, [page]);
 
   return (
-    <div className="flex flex-col w-full h-screen">
+    <div className="flex flex-col w-full">
       <section className="w-[1440px] mx-auto flex flex-col gap-6">
         <Header />
         <section className="flex flex-col gap-4 w-full px-[80px]">
-          <div className="flex justify-between items-center w-full">
-            <p className="font-semibold text-[24px]">Upcoming </p>
-          </div>
-          <div
-            className="grid gap-8"
-            style={{ gridTemplateColumns: `repeat(5, minmax(0, 1fr))` }}
-          >
+          <p className="font-semibold text-[24px]">Upcoming</p>
+          <div className="grid gap-8" style={{ gridTemplateColumns: `repeat(5, minmax(0, 1fr))` }}>
             {upcomingMovies.map((item) => (
-              <MovieCard
-                key={item.id}
-                image={item.poster_path}
-                title={item.title}
-                rating={item.vote_average}
-                id={item.id}
-              />
+              <MovieCard key={item.id} image={item.poster_path} title={item.title} rating={item.vote_average} id={item.id} />
             ))}
           </div>
         </section>
-        <div className="w-full">
-          <PaginationMovie />
-        </div>
+        <PaginationMovie totalPages={totalPages} />
         <Footer />
       </section>
     </div>
+  );
+}
+
+export default function UpcomingPage() {
+  return (
+    <Suspense fallback={<div />}>
+      <UpcomingContent />
+    </Suspense>
   );
 }
