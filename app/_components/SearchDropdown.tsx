@@ -18,7 +18,7 @@ export const SearchDropdown = ({
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<any[]>([]);
   const [internalIsOpen, setInternalIsOpen] = useState(false);
-  
+
   const isOpen = externalIsOpen !== undefined ? externalIsOpen : internalIsOpen;
 
   const setIsOpen = (open: boolean) => {
@@ -62,7 +62,14 @@ export const SearchDropdown = ({
     return () => clearTimeout(timer);
   }, [query]);
 
-  // Хайлтын хуудас руу шилжих ажиллагаа
+  // Кино руу шилжих
+  const handleSelectMovie = (movieId: number) => {
+    setIsOpen(false);
+    if (onClose) onClose();
+    router.push(`/movieDetails/${movieId}`);
+  };
+
+  // Хайлтын хуудас руу шилжих
   const handleSeeAll = () => {
     if (!query.trim()) return;
     setIsOpen(false);
@@ -92,20 +99,20 @@ export const SearchDropdown = ({
         />
       </div>
 
-      {/* Dropdown Results */}
+      {/* Dropdown Results - z-[100] өгч mobile overlay (z-50)-ээс дээгүүр гаргав */}
       {isOpen && query.trim() !== "" && (
-        <div className="absolute left-0 right-0 top-full mt-2 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-lg shadow-xl z-50 overflow-hidden">
+        <div className="absolute left-0 right-0 top-full mt-2 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-lg shadow-xl z-[100] overflow-hidden">
           {results.length > 0 ? (
             <>
               {results.map((movie) => (
                 <div
                   key={movie.id}
-                  onClick={() => {
-                    router.push(`/movieDetails/${movie.id}`);
-                    setIsOpen(false);
-                    if (onClose) onClose();
+                  // onMouseDown ашигласнаар outside click-ээс өрсөж эвент дуудагдана
+                  onMouseDown={(e) => {
+                    e.preventDefault();
+                    handleSelectMovie(movie.id);
                   }}
-                  className="flex items-center gap-3 p-2.5 hover:bg-zinc-100 dark:hover:bg-zinc-800 cursor-pointer transition-colors border-b border-zinc-100 dark:border-zinc-800"
+                  className="flex items-center gap-3 p-2.5 hover:bg-zinc-100 dark:hover:bg-zinc-800 cursor-pointer transition-colors border-b border-zinc-100 dark:border-zinc-800 active:bg-zinc-200 dark:active:bg-zinc-700 select-none"
                 >
                   <img
                     src={
@@ -129,8 +136,11 @@ export const SearchDropdown = ({
 
               <button
                 type="button"
-                onClick={handleSeeAll}
-                className="w-full p-3 text-left text-xs font-medium text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors border-t border-zinc-200 dark:border-zinc-800 flex items-center justify-between cursor-pointer"
+                onMouseDown={(e) => {
+                  e.preventDefault();
+                  handleSeeAll();
+                }}
+                className="w-full p-3 text-left text-xs font-medium text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors border-t border-zinc-200 dark:border-zinc-800 flex items-center justify-between cursor-pointer select-none"
               >
                 <span>
                   See all results for <strong className="text-zinc-900 dark:text-zinc-100">"{query}"</strong>

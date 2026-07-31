@@ -24,9 +24,8 @@ export const Header = () => {
           />
         </Link>
 
-        {/* 1. Desktop & Laptop View (Голд нь цэвэрхэн байрлуулна) */}
+        {/* 1. Desktop & Laptop View */}
         <div className="hidden sm:flex items-center justify-center gap-3 flex-1 max-w-md mx-auto">
-          {/* Genre нээгдэхэд Search-ийг хаана */}
           <GenreButtonDrop onOpen={() => setIsSearchOpen(false)} />
 
           <div className="flex-1 w-full">
@@ -37,7 +36,7 @@ export const Header = () => {
           </div>
         </div>
 
-        {/* 2. Баруун талд: DarkModeToggle */}
+        {/* 2. Right Side Icons */}
         <div className="flex items-center gap-2 shrink-0 z-10">
           {!mobileSearchOpen && (
             <button
