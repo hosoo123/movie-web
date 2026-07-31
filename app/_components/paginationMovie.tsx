@@ -28,7 +28,8 @@ export const PaginationMovie = ({
   };
 
   return (
-    <div className="text-white">
+    
+    <div className="w-full flex justify-center items-center my-6 text-zinc-900 dark:text-zinc-100">
       <Pagination>
         <PaginationContent>
           {/* Previous */}
@@ -41,8 +42,8 @@ export const PaginationMovie = ({
               }}
               className={
                 currentPage <= 1
-                  ? "pointer-events-none opacity-50"
-                  : "cursor-pointer"
+                  ? "pointer-events-none opacity-40"
+                  : "cursor-pointer hover:bg-zinc-100 dark:hover:bg-zinc-800"
               }
             />
           </PaginationItem>
@@ -56,12 +57,13 @@ export const PaginationMovie = ({
                 goToPage(1);
               }}
               isActive={currentPage === 1}
+              className="cursor-pointer"
             >
               1
             </PaginationLink>
           </PaginationItem>
 
-          {/* Дунд хуудаснууд */}
+          {/* Дунд хуудаснууд - Ellipsis */}
           {currentPage > 3 && (
             <PaginationItem>
               <PaginationEllipsis />
@@ -79,6 +81,7 @@ export const PaginationMovie = ({
                     goToPage(p);
                   }}
                   isActive={p === currentPage}
+                  className="cursor-pointer"
                 >
                   {p}
                 </PaginationLink>
@@ -102,6 +105,7 @@ export const PaginationMovie = ({
                   goToPage(totalPages);
                 }}
                 isActive={currentPage === totalPages}
+                className="cursor-pointer"
               >
                 {totalPages}
               </PaginationLink>
@@ -118,8 +122,8 @@ export const PaginationMovie = ({
               }}
               className={
                 currentPage >= totalPages
-                  ? "pointer-events-none opacity-50"
-                  : "cursor-pointer"
+                  ? "pointer-events-none opacity-40"
+                  : "cursor-pointer hover:bg-zinc-100 dark:hover:bg-zinc-800"
               }
             />
           </PaginationItem>

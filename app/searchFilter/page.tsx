@@ -14,7 +14,7 @@ type GenreItem = { id: number; name: string };
 function SearchFilterContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const query = searchParams.get("query") || "";
+  const query = searchParams.get("query") || searchParams.get("value") || "";
   const genreId = searchParams.get("genreId") || "";
   const genreName = searchParams.get("genreName") || "";
   const genreIdsParam = searchParams.get("genreIds") || "";
@@ -43,11 +43,15 @@ function SearchFilterContent() {
   // Genres fetch
   useEffect(() => {
     const fetchGenres = async () => {
-      const response = await fetch(
-        `https://api.themoviedb.org/3/genre/movie/list?language=en&api_key=${api_key}`,
-      );
-      const data = await response.json();
-      setGenres(data.genres || []);
+      try {
+        const response = await fetch(
+          `https://api.themoviedb.org/3/genre/movie/list?language=en&api_key=${api_key}`,
+        );
+        const data = await response.json();
+        setGenres(data.genres || []);
+      } catch (err) {
+        console.error("Genre fetch error:", err);
+      }
     };
     fetchGenres();
   }, []);
@@ -65,14 +69,18 @@ function SearchFilterContent() {
       try {
         const url =
           selectedGenreIds.length > 0
-            ? `https://api.themoviedb.org/3/discover/movie?language=en-US&page=${page}&api_key=${api_key}&with_genres=${selectedGenreIds.join(",")}`
-            : `https://api.themoviedb.org/3/search/movie?query=${encodeURIComponent(query)}&language=en-US&page=${page}&api_key=${api_key}`;
+            ? `https://api.themoviedb.org/3/discover/movie?language=en-US&page=${page}&api_key=${api_key}&with_genres=${selectedGenreIds.join(
+                ",",
+              )}`
+            : `https://api.themoviedb.org/3/search/movie?query=${encodeURIComponent(
+                query,
+              )}&language=en-US&page=${page}&api_key=${api_key}`;
 
         const response = await fetch(url);
         const data = await response.json();
         setMovies(data.results || []);
         setTotalResults(data.total_results || 0);
-        setTotalPages(Math.min(data.total_pages, 500));
+        setTotalPages(Math.min(data.total_pages || 1, 500));
       } catch (err) {
         console.error(err);
       } finally {
@@ -91,6 +99,7 @@ function SearchFilterContent() {
     const nextNames = isSelected
       ? selectedGenreNames.filter((n) => n !== genre.name)
       : [...selectedGenreNames, genre.name];
+
     params.set("page", "1");
     if (nextIds.length > 0) {
       params.set("genreIds", nextIds.join(","));
@@ -113,17 +122,19 @@ function SearchFilterContent() {
         : "Search results";
 
   return (
-    <div className="min-h-screen text-black">
+    <div className="flex flex-col min-h-screen bg-white dark:bg-zinc-950 text-zinc-900 dark:text-zinc-50">
       <Header />
-      <main className="max-w-7xl mx-auto px-8 py-10 grid grid-cols-12 gap-12">
-        <aside className="col-span-4">
-          <h2 className="text-3xl font-bold tracking-tight dark:text-white">
+
+      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 lg:py-10 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
+        {/* Жанрын шүүлтүүрийн хэсэг */}
+        <aside className="lg:col-span-4 border-b lg:border-b-0 lg:border-r border-zinc-200 dark:border-zinc-800 pb-6 lg:pb-0 lg:pr-8">
+          <h2 className="text-2xl sm:text-3xl font-bold tracking-tight">
             Search filter
           </h2>
-          <p className="pt-3.5 text-2xl font-bold tracking-tight dark:text-white">
+          <p className="pt-3 text-lg sm:text-xl font-bold tracking-tight">
             Genres
           </p>
-          <p className="text-sm text-zinc-400 mt-1 mb-6">
+          <p className="text-xs sm:text-sm text-zinc-500 dark:text-zinc-400 mt-1 mb-4 sm:mb-6">
             See lists of movies by genre
           </p>
           <div className="flex flex-wrap gap-2">
@@ -135,8 +146,8 @@ function SearchFilterContent() {
                   onClick={() => handleGenreClick(genre)}
                   className={`cursor-pointer px-3 py-1.5 border text-xs font-medium rounded-md transition ${
                     isActive
-                      ? "bg-black text-white border-black dark:bg-white dark:text-black"
-                      : "border-zinc-300 text-black dark:text-white hover:bg-gray-300 dark:hover:bg-gray-300 dark:hover:text-black"
+                      ? "bg-zinc-900 text-white border-zinc-900 dark:bg-zinc-100 dark:text-zinc-900 dark:border-zinc-100"
+                      : "border-zinc-300 dark:border-zinc-700 text-zinc-800 dark:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-800"
                   }`}
                 >
                   {genre.name}
@@ -147,20 +158,21 @@ function SearchFilterContent() {
           </div>
         </aside>
 
-        <section className="col-span-8">
-          <h1 className="text-3xl dark:text-white font-bold tracking-tight">
+        {/* Нийт кинонуудын жагсаалт */}
+        <section className="lg:col-span-8">
+          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">
             {headingText}
           </h1>
-          <p className="text-sm text-zinc-400 mt-1 mb-6">
+          <p className="text-xs sm:text-sm text-zinc-500 dark:text-zinc-400 mt-1 mb-6">
             {selectedGenreNames.length > 0
               ? `Movies in the ${selectedGenreNames.join(", ")} genres`
               : ""}
           </p>
 
           {loading ? (
-            <p className="text-zinc-400">Loading...</p>
+            <p className="text-zinc-400 py-10">Loading...</p>
           ) : movies.length > 0 ? (
-            <div className="grid grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
               {movies.map((item) => (
                 <MovieCard
                   key={item.id}
@@ -173,14 +185,17 @@ function SearchFilterContent() {
               ))}
             </div>
           ) : (
-            <p className="text-zinc-400">No movies found.</p>
+            <p className="text-zinc-400 py-10">No movies found.</p>
           )}
 
-          <div className="w-full pt-4">
-            <PaginationMovie totalPages={totalPages} />
-          </div>
+          {totalPages > 1 && (
+            <div className="w-full pt-8 flex justify-center">
+              <PaginationMovie totalPages={totalPages} />
+            </div>
+          )}
         </section>
       </main>
+
       <Footer />
     </div>
   );
@@ -188,7 +203,9 @@ function SearchFilterContent() {
 
 export default function SearchFilter() {
   return (
-    <Suspense fallback={<div className="min-h-screen" />}>
+    <Suspense
+      fallback={<div className="min-h-screen bg-white dark:bg-zinc-950" />}
+    >
       <SearchFilterContent />
     </Suspense>
   );

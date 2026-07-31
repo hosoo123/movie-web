@@ -9,7 +9,6 @@ export const MovieList = ({
   movies,
   limit = 10,
   onSeeMore,
-  cols = 5,
   cardSize = "md",
 }: {
   genre: string;
@@ -24,30 +23,29 @@ export const MovieList = ({
   return (
     <section className="flex flex-col gap-4 w-full">
       <div className="flex justify-between items-center w-full">
-        <p className="font-semibold text-[24px]">{genre}</p>
+        <h2 className="font-semibold text-xl sm:text-2xl">{genre}</h2>
         {ShowSeeMore &&
           (onSeeMore ? (
             <button
               onClick={onSeeMore}
-              className="flex flex-row items-center font-medium text-sm hover:underline"
+              className="flex items-center font-medium text-xs sm:text-sm text-indigo-600 dark:text-indigo-400 hover:underline"
             >
               <span>See more</span>
-              <ChevronRight className="w-4.5 h-4.5" />
+              <ChevronRight className="w-4 h-4 ml-0.5" />
             </button>
           ) : (
             <Link
               href={url}
-              className="flex flex-row items-center font-medium text-sm hover:underline"
+              className="flex items-center font-medium text-xs sm:text-sm text-indigo-600 dark:text-indigo-400 hover:underline"
             >
               <span>See more</span>
-              <ChevronRight className="w-4.5 h-4.5" />
+              <ChevronRight className="w-4 h-4 ml-0.5" />
             </Link>
           ))}
       </div>
-      <div
-        className="grid gap-4"
-        style={{ gridTemplateColumns: `repeat(${cols}, minmax(0, 1fr))` }}
-      >
+
+      {/* Grid: Responsive Columns (2 columns on mobile -> 5 on desktop) */}
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-6">
         {movies.slice(0, limit).map((item) => (
           <MovieCard
             key={item.id}

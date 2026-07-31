@@ -7,54 +7,66 @@ import { TrailerDialog } from "./trailerDialog";
 
 export const HeroCard = ({ movie }: { movie: any }) => {
   return (
-    <div className="w-full h-[600px] relative">
-      <Link href={`/movieDetails/${movie.id}`} className="block w-full h-full">
-        <section className="w-full h-full relative">
-          <img
-            src={`https://image.tmdb.org/t/p/original${movie?.backdrop_path}`}
-            alt={movie?.title}
-            className="w-full h-full cursor-pointer object-cover absolute"
-          />
-          <div className="relative z-10 pl-[140px] text-white w-full h-full items-center flex">
-            <div className="flex flex-col">
-              <div>
-                <p className="text-base bold">Now Playing:</p>
-                <p className="text-4xl font-extrabold">{movie?.title}</p>
-                <p className="flex flex-row gap-1.5 text-lg ">
-                  <Image
-                    src="/icons/star.png"
-                    alt="StarIcon"
-                    width={23}
-                    height={22}
-                  />
-                  {movie?.vote_average?.toFixed(1)}
-                  <span className="text-[#71717A] text-base flex items-center">
-                    /10
-                  </span>
-                </p>
-              </div>
-              <p className="py-4 w-[302px] text-xs">{movie?.overview}</p>
-            </div>
-          </div>
-        </section>
-      </Link>
+    <div className="w-full h-[380px] sm:h-[480px] md:h-[550px] relative rounded-2xl overflow-hidden group">
+      <img
+        src={`https://image.tmdb.org/t/p/original${movie?.backdrop_path}`}
+        alt={movie?.title}
+        className="w-full h-full object-cover absolute inset-0"
+      />
+      {/* Dark overlay gradients */}
+      <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent z-10" />
 
-      <TrailerDialog movieId={movie?.id} movieTitle={movie?.title}>
-        <Button
-          type="button"
-          className="absolute bottom-40 left-[140px] z-20 w-[145px] bg-white text-black hover:text-white"
-          onClick={(e) => e.stopPropagation()}
-        >
+      {/* Movie Details */}
+      <div className="relative z-20 h-full max-w-2xl px-6 sm:px-12 flex flex-col justify-end pb-8 sm:pb-12 text-white">
+        <p className="text-xs sm:text-sm font-semibold uppercase tracking-wider text-amber-400">
+          Now Playing
+        </p>
+        <h2 className="text-2xl sm:text-4xl md:text-5xl font-extrabold line-clamp-1 mt-1">
+          {movie?.title}
+        </h2>
+
+        <div className="flex items-center  gap-2 mt-2">
           <Image
-            src="/icons/play.png"
-            alt="playIcon"
-            width={9}
-            height={12}
-            className="w-[9px] h-3 "
+            src="/icons/star.png"
+            alt="StarIcon"
+            width={20}
+            height={20}
+            className="w-5 h-5"
           />
-          Watch Trailer
-        </Button>
-      </TrailerDialog>
+          <span className="text-base sm:text-lg font-bold">
+            {movie?.vote_average?.toFixed(1)}
+          </span>
+          <span className="text-zinc-400 text-xs sm:text-sm">/10</span>
+        </div>
+
+        <p className="py-3 text-xs sm:text-sm text-zinc-300 line-clamp-2 sm:line-clamp-3">
+          {movie?.overview}
+        </p>
+
+        <div className="flex items-center cursor-pointer gap-3 mt-2">
+          <Link href={`/movieDetails/${movie?.id}`}>
+            <Button size="sm" className="sm:size-default cursor-pointer">
+              More Info
+            </Button>
+          </Link>
+          <TrailerDialog movieId={movie?.id} movieTitle={movie?.title}>
+            <Button
+              size="sm"
+              variant="secondary"
+              className="gap-2 bg-white/90 hover:bg-white cursor-pointer text-black sm:size-default"
+            >
+              <Image
+                src="/icons/play.png"
+                alt="play"
+                width={10}
+                height={12}
+                className="w-2.5 h-3 cursor-pointer"
+              />
+              Watch Trailer
+            </Button>
+          </TrailerDialog>
+        </div>
+      </div>
     </div>
   );
 };

@@ -18,7 +18,13 @@ type GenreItem = {
   name: string;
 };
 
-export function GenreButtonDrop({ onOpen }: { onOpen?: () => void }) {
+export function GenreButtonDrop({
+  onOpen,
+  isIconOnly = false,
+}: {
+  onOpen?: () => void;
+  isIconOnly?: boolean;
+}) {
   const router = useRouter();
   const [genres, setGenres] = useState<GenreItem[]>([]);
   const [loading, setLoading] = useState(false);
@@ -28,7 +34,7 @@ export function GenreButtonDrop({ onOpen }: { onOpen?: () => void }) {
       setLoading(true);
       try {
         const response = await fetch(
-          `https://api.themoviedb.org/3/genre/movie/list?language=en&api_key=${API_KEY}`,
+          `https://api.themoviedb.org/3/genre/movie/list?language=en&api_key=${API_KEY}`
         );
         const data = await response.json();
         setGenres(data.genres || []);
@@ -51,37 +57,43 @@ export function GenreButtonDrop({ onOpen }: { onOpen?: () => void }) {
   };
 
   return (
-    <DropdownMenu onOpenChange={(open) => { if (open) onOpen?.(); }}>
+    <DropdownMenu
+      onOpenChange={(open) => {
+        if (open) onOpen?.();
+      }}
+    >
       <DropdownMenuTrigger asChild>
         <Button
-          variant={"outline"}
-          className="drop-shadow-md flex gap-2 font-medium text-[14px] bg-white text-black h-9 dark:border-white dark:bg-black  dark:text-white"
+          variant="outline"
+          className="flex gap-2 font-medium text-xs sm:text-sm h-9 bg-white text-black dark:border-zinc-700 dark:bg-zinc-900 dark:text-white px-3"
         >
-          <span>
-            <ChevronDown />
-          </span>
-          Genre
+          <ChevronDown className="w-4 h-4" />
+          {!isIconOnly && <span>Genre</span>}
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-[577px] h-[333px] p-5 " align="start">
-        <div className="flex flex-col gap-2">
-          <p className="text-2xl font-bold">Genres</p>
-          <p>See list of movies by genre</p>
+      <DropdownMenuContent
+        className="w-[90vw] max-w-[500px] p-4 max-h-[80vh] overflow-y-auto z-[60]"
+        align="start"
+      >
+        <div className="flex flex-col gap-1 mb-2">
+          <p className="text-lg font-bold">Genres</p>
+          <p className="text-xs text-zinc-500">See list of movies by genre</p>
         </div>
         <DropdownMenuSeparator />
-        <div className="flex gap-3 flex-wrap">
+        <div className="flex gap-2 flex-wrap pt-2">
           {loading ? (
             <p className="text-sm text-zinc-400">Loading genres...</p>
           ) : genres.length > 0 ? (
             genres.map((genre) => (
               <Button
                 key={genre.id}
-                className="flex gap-2 items-center h-5 font-semibold text-[12px]"
-                variant={"outline"}
+                size="sm"
+                variant="outline"
+                className="flex gap-1 items-center text-xs font-medium h-7"
                 onClick={() => handleGenreSelect(genre)}
               >
                 <span>{genre.name}</span>
-                <ChevronRight />
+                <ChevronRight className="w-3 h-3" />
               </Button>
             ))
           ) : (

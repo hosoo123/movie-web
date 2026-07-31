@@ -1,4 +1,5 @@
 "use client";
+
 import { Suspense, useEffect, useState } from "react";
 import { useParams, useSearchParams } from "next/navigation";
 import { Header } from "../../_components/header";
@@ -17,22 +18,31 @@ function SimilarContent() {
   const [totalPages, setTotalPages] = useState(1);
 
   useEffect(() => {
+    if (!id) return;
+
     const fetchSimilarMovies = async () => {
-      const response = await fetch(
-        `https://api.themoviedb.org/3/movie/${id}/similar?language=en-US&page=${page}&api_key=${api_key}`
-      );
-      const data = await response.json();
-      setSimilarMovies(data.results || []);
-      setTotalPages(Math.min(data.total_pages, 500));
+      try {
+        const response = await fetch(
+          `https://api.themoviedb.org/3/movie/${id}/similar?language=en-US&page=${page}&api_key=${api_key}`
+        );
+        const data = await response.json();
+        setSimilarMovies(data.results || []);
+        setTotalPages(Math.min(data.total_pages || 1, 500));
+      } catch (error) {
+        console.error("Error fetching similar movies:", error);
+      }
     };
     fetchSimilarMovies();
   }, [id, page]);
 
   return (
-    <div className="flex flex-col w-full">
-      <div className="w-[1440px] mx-auto flex flex-col gap-6">
-        <Header />
-        <div className="px-[80px]">
+    <div className="flex flex-col min-h-screen w-full bg-white dark:bg-zinc-950 text-zinc-900 dark:text-zinc-50 transition-colors">
+      {/* Header */}
+      <Header />
+
+      {/* Main Content */}
+      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10 flex flex-col gap-8">
+        <div>
           <MovieList
             genre="More Like This"
             ShowSeeMore={false}
@@ -42,16 +52,24 @@ function SimilarContent() {
             cardSize="md"
           />
         </div>
-        <PaginationMovie totalPages={totalPages} />
-        <Footer />
-      </div>
+
+        {/* Pagination Section */}
+        {totalPages > 1 && (
+          <div className="w-full pt-4 flex justify-center">
+            <PaginationMovie totalPages={totalPages} />
+          </div>
+        )}
+      </main>
+
+      {/* Footer */}
+      <Footer />
     </div>
   );
 }
 
 export default function SimilarPage() {
   return (
-    <Suspense fallback={<div />}>
+    <Suspense fallback={<div className="min-h-screen bg-white dark:bg-zinc-950" />}>
       <SimilarContent />
     </Suspense>
   );

@@ -1,4 +1,5 @@
 "use client";
+
 import { Header } from "../../_components/header";
 import { Footer } from "../../_components/footer";
 import { MovieList } from "../../_components/movieList";
@@ -18,47 +19,31 @@ export default function MovieDetailPage() {
   const [similarMovies, setSimilarMovies] = useState<any>(null);
   const [trailerVideo, setTrailerVideo] = useState<any>(null);
 
-  const fetchMovieDetail = async () => {
-    const response = await fetch(
-      `https://api.themoviedb.org/3/movie/${id}?language=en-US&api_key=${api_key}`,
-    );
-    const data = await response.json();
-    setMovieDetail(data);
-  };
-
-  const fetchCreditDetail = async () => {
-    const response = await fetch(
-      `https://api.themoviedb.org/3/movie/${id}/credits?language=en-US&api_key=${api_key}`,
-    );
-    const data = await response.json();
-    setMovieCredits(data);
-  };
-
-  const fetchSimilarMovies = async () => {
-    const response = await fetch(
-      `https://api.themoviedb.org/3/movie/${id}/similar?language=en-US&api_key=${api_key}`,
-    );
-    const data = await response.json();
-    setSimilarMovies(data);
-  };
-
-  const fetchTrailerVid = async () => {
-    const response = await fetch(
-      `https://api.themoviedb.org/3/movie/${id}/videos?language=en-US&api_key=${api_key}`,
-    );
-    const data = await response.json();
-    setTrailerVideo(data);
-  };
   useEffect(() => {
-    fetchMovieDetail();
-    fetchCreditDetail();
-    fetchSimilarMovies();
-    fetchTrailerVid();
+    if (!id) return;
+
+    const fetchAllData = async () => {
+      try {
+        const [detailRes, creditRes, similarRes, videoRes] = await Promise.all([
+          fetch(`https://api.themoviedb.org/3/movie/${id}?language=en-US&api_key=${api_key}`),
+          fetch(`https://api.themoviedb.org/3/movie/${id}/credits?language=en-US&api_key=${api_key}`),
+          fetch(`https://api.themoviedb.org/3/movie/${id}/similar?language=en-US&api_key=${api_key}`),
+          fetch(`https://api.themoviedb.org/3/movie/${id}/videos?language=en-US&api_key=${api_key}`)
+        ]);
+
+        setMovieDetail(await detailRes.json());
+        setMovieCredits(await creditRes.json());
+        setSimilarMovies(await similarRes.json());
+        setTrailerVideo(await videoRes.json());
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchAllData();
   }, [id]);
 
-  const director = movieCredits?.crew?.find(
-    (person: any) => person.job === "Director",
-  )?.name;
+  const director = movieCredits?.crew?.find((person: any) => person.job === "Director")?.name;
   const writers = movieCredits?.crew
     ?.filter((person: any) => person.department === "Writing")
     ?.slice(0, 3)
@@ -69,41 +54,35 @@ export default function MovieDetailPage() {
     ?.map((person: any) => person.name)
     ?.join(" · ");
 
-  // ── Trailer ──────────────────────────────────────
   const officialTrailer =
     trailerVideo?.results?.find(
-      (video: any) => video.type === "Trailer" && video.site === "Youtube",
+      (video: any) => video.type === "Trailer" && video.site === "YouTube",
     ) || trailerVideo?.results?.[0];
+
   return (
-    <section className="flex flex-col w-full h-screen">
-      <div className="w-[1440px] mx-auto flex flex-col gap-6">
-        <Header />
-        <div className="w-[1080px] mx-auto">
-          <MovieDetailHeader movieDetail={movieDetail} />
-          <MovieDetailImages
-            movieDetail={movieDetail}
-            officialTrailer={officialTrailer}
-          />
-          <MovieDetailInfo
-            movieDetail={movieDetail}
-            director={director}
-            writers={writers}
-            stars={stars}
-          />
-        </div>
-        <div className="w-[1080px] mx-auto pb-4">
+    <div className="flex flex-col min-h-screen w-full bg-white dark:bg-zinc-950 text-zinc-900 dark:text-zinc-50">
+      <Header />
+      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col gap-8">
+        <MovieDetailHeader movieDetail={movieDetail} />
+        <MovieDetailImages movieDetail={movieDetail} officialTrailer={officialTrailer} />
+        <MovieDetailInfo
+          movieDetail={movieDetail}
+          director={director}
+          writers={writers}
+          stars={stars}
+        />
+        <div className="pt-6">
           <MovieList
-            genre="More Like This"
+            genre="More like this"
             ShowSeeMore={true}
             url={`/similar/${id}`}
             movies={similarMovies?.results ?? []}
-            cols={5}
             limit={5}
             cardSize="sm"
           />
         </div>
-        <Footer />
-      </div>
-    </section>
+      </main>
+      <Footer />
+    </div>
   );
 }

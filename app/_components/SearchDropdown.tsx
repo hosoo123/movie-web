@@ -1,61 +1,38 @@
 "use client";
 
-import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useState, useEffect, useRef } from "react";
-import { Input } from "@/components/ui/input";
-
-const API_KEY = "3f7806eb786a47af748865926b439e68";
+import { Search } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 export const SearchDropdown = ({
-  isOpen,
-  setIsOpen,
+  autoFocus = false,
+  onClose,
+  isOpen: externalIsOpen,
+  onOpenChange,
 }: {
-  isOpen: boolean;
-  setIsOpen: (v: boolean) => void;
+  autoFocus?: boolean;
+  onClose?: () => void;
+  isOpen?: boolean;
+  onOpenChange?: (open: boolean) => void;
 }) => {
-  const router = useRouter();
+  const [query, setQuery] = useState("");
+  const [results, setResults] = useState<any[]>([]);
+  const [internalIsOpen, setInternalIsOpen] = useState(false);
+  
+  const isOpen = externalIsOpen !== undefined ? externalIsOpen : internalIsOpen;
+
+  const setIsOpen = (open: boolean) => {
+    setInternalIsOpen(open);
+    if (onOpenChange) onOpenChange(open);
+  };
+
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const router = useRouter();
 
-  const [searchValue, setSearchValue] = useState("");
-  const [suggestions, setSuggestions] = useState<any[]>([]);
-
-  const [loading, setLoading] = useState(false);
-
-  // ── Debounce + Fetch ─────────────────────────────
+  // Гадна талд дарахад Dropdown-ийг хаах
   useEffect(() => {
-    const fetchSuggestions = async () => {
-      if (!searchValue.trim()) {
-        setSuggestions([]);
-        setIsOpen(false);
-        return;
-      }
-      setLoading(true);
-      try {
-        const res = await fetch(
-          `https://api.themoviedb.org/3/search/movie?query=${encodeURIComponent(searchValue.trim())}&language=en-US&page=1&api_key=${API_KEY}`,
-        );
-        const data = await res.json();
-        setSuggestions((data.results || []).slice(0, 5));
-        setIsOpen(true);
-      } catch (err) {
-        console.error("Search error:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    const timeout = setTimeout(fetchSuggestions, 300);
-    return () => clearTimeout(timeout);
-  }, [searchValue]);
-
-  // ── Гадна дарахад хаах ───────────────────────────
-  useEffect(() => {
-    const handleClickOutside = (e: MouseEvent) => {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(e.target as Node)
-      ) {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
         setIsOpen(false);
       }
     };
@@ -63,60 +40,72 @@ export const SearchDropdown = ({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // ── Enter дарахад шилжих ─────────────────────────
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter" && searchValue.trim()) {
-      setIsOpen(false);
-      router.push(
-        `/searchResults?query=${encodeURIComponent(searchValue.trim())}&page=1`,
-      );
+  // TMDB API-аас кино хайх
+  useEffect(() => {
+    if (!query.trim()) {
+      setResults([]);
+      return;
     }
-  };
 
-  const goToResults = () => {
+    const timer = setTimeout(async () => {
+      try {
+        const res = await fetch(
+          `https://api.themoviedb.org/3/search/movie?api_key=3f7806eb786a47af748865926b439e68&query=${encodeURIComponent(query)}`
+        );
+        const data = await res.json();
+        setResults(data.results?.slice(0, 5) || []);
+      } catch (err) {
+        console.error(err);
+      }
+    }, 300);
+
+    return () => clearTimeout(timer);
+  }, [query]);
+
+  // Хайлтын хуудас руу шилжих ажиллагаа
+  const handleSeeAll = () => {
+    if (!query.trim()) return;
     setIsOpen(false);
-    router.push(
-      `/searchResults?query=${encodeURIComponent(searchValue.trim())}&page=1`,
-    );
+    if (onClose) onClose();
+    router.push(`/searchResults?value=${encodeURIComponent(query.trim())}`);
   };
 
   return (
-    <div className="relative" ref={dropdownRef}>
-      {/* Input */}
-      <div className="border rounded-lg flex flex-row items-center h-9 w-96 dark:border-white bg-white dark:bg-black z-20">
-        <img
-          src="/icons/searchIcon.png"
-          alt="searchIcon"
-          width={24}
-          height={24}
-          className="pl-3.5 object-contain dark:invert"
-        />
-        <Input
+    <div className="relative w-full" ref={dropdownRef}>
+      {/* Search Input */}
+      <div className="relative flex items-center w-full">
+        <Search className="absolute left-3 w-4 h-4 text-zinc-400 pointer-events-none" />
+        <input
           type="text"
-          placeholder="Search.."
-          className="border-none outline-none h-full w-full pl-3 z-10"
-          value={searchValue}
-          onChange={(e) => setSearchValue(e.target.value)}
-          onKeyDown={handleKeyDown}
-          onFocus={() => searchValue.trim() && setIsOpen(true)}
+          value={query}
+          autoFocus={autoFocus}
+          onFocus={() => setIsOpen(true)}
+          onChange={(e) => {
+            setQuery(e.target.value);
+            if (!isOpen) setIsOpen(true);
+          }}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") handleSeeAll();
+          }}
+          placeholder="Search..."
+          className="w-full h-9 pl-9 pr-4 text-sm bg-zinc-100 dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100 border border-zinc-200 dark:border-zinc-800 rounded-lg outline-none focus:ring-1 focus:ring-zinc-400 transition-colors"
         />
       </div>
 
-      {/* Dropdown */}
-      {isOpen && (
-        <div className="absolute top-11 left-0 w-96 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 rounded-lg shadow-xl z-50 overflow-hidden">
-          {loading ? (
-            <div className="p-4 text-xs text-zinc-400 text-center">
-              Loading...
-            </div>
-          ) : suggestions.length > 0 ? (
-            <div className="p-2 divide-y divide-zinc-100 dark:divide-zinc-800">
-              {suggestions.map((movie) => (
-                <Link
+      {/* Dropdown Results */}
+      {isOpen && query.trim() !== "" && (
+        <div className="absolute left-0 right-0 top-full mt-2 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-lg shadow-xl z-50 overflow-hidden">
+          {results.length > 0 ? (
+            <>
+              {results.map((movie) => (
+                <div
                   key={movie.id}
-                  href={`/movieDetails/${movie.id}`}
-                  onClick={() => setIsOpen(false)}
-                  className="flex items-center gap-3 p-2 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-md transition"
+                  onClick={() => {
+                    router.push(`/movieDetails/${movie.id}`);
+                    setIsOpen(false);
+                    if (onClose) onClose();
+                  }}
+                  className="flex items-center gap-3 p-2.5 hover:bg-zinc-100 dark:hover:bg-zinc-800 cursor-pointer transition-colors border-b border-zinc-100 dark:border-zinc-800"
                 >
                   <img
                     src={
@@ -125,32 +114,33 @@ export const SearchDropdown = ({
                         : "/placeholder.png"
                     }
                     alt={movie.title}
-                    className="w-10 h-14 object-cover rounded"
+                    className="w-8 h-11 object-cover rounded flex-shrink-0"
                   />
-                  <div className="flex-1 min-w-0">
-                    <h4 className="text-sm font-semibold truncate text-black dark:text-white">
+                  <div className="flex flex-col overflow-hidden">
+                    <p className="text-sm font-medium text-zinc-900 dark:text-zinc-100 truncate">
                       {movie.title}
-                    </h4>
-                    <div className="flex items-center gap-2 text-xs text-zinc-500 mt-1">
-                      <span>⭐ {movie.vote_average?.toFixed(1)} / 10</span>
-                      {movie.release_date && (
-                        <span>• {movie.release_date.split("-")[0]}</span>
-                      )}
-                    </div>
+                    </p>
+                    <p className="text-xs text-zinc-500">
+                      ★ {movie.vote_average?.toFixed(1) || "N/A"} • {movie.release_date?.split("-")[0] || "N/A"}
+                    </p>
                   </div>
-                  <span className="text-xs text-zinc-400">→</span>
-                </Link>
+                </div>
               ))}
+
               <button
-                onClick={goToResults}
-                className="cursor-pointer w-full text-left pt-3 pb-1 px-2 text-xs font-semibold text-black dark:text-white hover:underline"
+                type="button"
+                onClick={handleSeeAll}
+                className="w-full p-3 text-left text-xs font-medium text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors border-t border-zinc-200 dark:border-zinc-800 flex items-center justify-between cursor-pointer"
               >
-                See all results for "{searchValue}"
+                <span>
+                  See all results for <strong className="text-zinc-900 dark:text-zinc-100">"{query}"</strong>
+                </span>
+                <span className="text-zinc-400">→</span>
               </button>
-            </div>
+            </>
           ) : (
-            <div className="p-4 text-xs text-zinc-400 text-center">
-              No results found
+            <div className="p-4 text-xs text-center text-zinc-500">
+              No movies found for "{query}"
             </div>
           )}
         </div>
